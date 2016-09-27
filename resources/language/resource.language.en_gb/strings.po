@@ -1,5 +1,5 @@
 # XBMC Media Center language file
-# Addon Name: ExtendedInfo Script
+# Addon Name: Playlist Screensaver
 # Addon id: screensaver.playlist
 # Addon version: 0.0.1
 # Addon Provider: BigNoid
