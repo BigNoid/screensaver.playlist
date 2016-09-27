@@ -7,11 +7,12 @@
 	<extension point="xbmc.addon.metadata">
 		<summary lang="en">Screensaver that plays a user defined (smart) playlist</summary>
 		<description lang="en">The Playlist Screensaver plays media from a (smart) playlist as screensaver. As it opens the default player it is required to press 'Stop' to exit the screensaver. .m3u and .xsp are the supported file types.</description>
-		<language></language>
+		<disclaimer lang="en">Enable 'Use dim if paused during video playback' when selecting this screensaver</disclaimer>
+		<language />
 		<platform>all</platform>
 		<license>GNU GENERAL PUBLIC LICENSE Version 2</license>
-		<forum></forum>
-		<website></website>
+		<forum />
+		<website />
 		<email>big.noid@kodi.tv</email>
 		<source>https://github.com/BigNoid/screensaver.playlist</source>
 	</extension>
