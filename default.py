@@ -36,31 +36,17 @@ class Main:
         playlist = ADDON.getSetting("playlist")
         random = ADDON.getSetting("random")
         if playlist.endswith('.m3u'):
-            xbmc.Player().play(self.parse_playlist(playlist, random))
+            queue = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+            queue.load(playlist)
+            if random:
+                queue.shuffle()
+            xbmc.Player().play(queue)
             xbmc.executebuiltin("PlayerControl(RepeatAll)")
         elif playlist.endswith('.xsp'):
             xbmc.Player().play(playlist)
             xbmc.executebuiltin("PlayerControl(RepeatAll)")
         else:
             xbmc.executebuiltin('Notification(%s, %s, %d, %s)' % (ADDON_NAME, ADDON_LANGUAGE(30003), 5000, ADDON_ICON))
-
-    def parse_playlist(self, playlist, random):
-        playlist = open(playlist, 'r')
-        line = playlist.readline()
-        if not line.startswith('#EXT') and line.endswith('M3U'):
-            xbmc.executebuiltin('Notification(%s, %s, %d, %s)' % (ADDON_NAME, ADDON_LANGUAGE(30004), 5000, ADDON_ICON))
-        else:
-            queue = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-            queue.clear()
-            for line in playlist:
-                line = line.strip()
-                if not line.startswith('#EXTINF:') and len(line) != 0:
-                    path = line
-                    queue.add(path)
-                    if random:
-                        queue.shuffle()
-        playlist.close()
-        return queue
 
 
 log('script version %s started' % ADDON_VERSION)
