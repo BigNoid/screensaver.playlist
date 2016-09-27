@@ -26,7 +26,7 @@ msgid "Playlist"
 msgstr ""
 
 msgctxt "#30002"
-msgid "Randomize"
+msgid "Randomize .m3u playlist"
 msgstr ""
 
 msgctxt "#30003"
