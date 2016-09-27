@@ -15,5 +15,9 @@
 		<website />
 		<email>big.noid@kodi.tv</email>
 		<source>https://github.com/BigNoid/screensaver.playlist</source>
+		<assets>
+			<icon>resources/icon.png</icon>
+			<fanart>resources/fanart.jpg</fanart>
+		</assets>
 	</extension>
 </addon>
