@@ -34,6 +34,9 @@ def log(txt):
 class Main:
     def __init__(self):
         self.playlistplayer = PlaylistPlayer()
+        self.screensaver()
+
+    def screensaver(self):
         playlist = ADDON.getSetting("playlist")
         random = ADDON.getSetting("random")
         if playlist.endswith('.m3u'):
@@ -57,7 +60,7 @@ class PlaylistPlayer(xbmc.Player):
         xbmc.log(msg='Playlist Screensaver started', level=xbmc.LOGDEBUG)
 
     def onPlaybackEnded(self):
-        Main()
+        self.screensaver()
 
     def onPlayBackStopped(self):
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
