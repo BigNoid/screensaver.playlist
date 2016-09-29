@@ -63,13 +63,14 @@ class PlaylistPlayer(xbmc.Player):
         self.onPlayBackStopped()
 
     def onPlayBackStopped(self):
-        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-        playlist.clear()
+        xbmc.executebuiltin("Dialog.Close(all,true)")
         xbmc.executebuiltin("ActivateWindow(videoplaylist)")
         xbmc.executebuiltin("Control.Message(26,click,videoplaylist)")
         xbmc.executebuiltin("Control.Message(26,click,videoplaylist)")
         xbmc.log(msg='Playlist Screensaver stopped', level=xbmc.LOGDEBUG)
         xbmc.executebuiltin("Action(PreviousMenu)")
+        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        playlist.clear()
 
 
 log('script version %s started' % ADDON_VERSION)
