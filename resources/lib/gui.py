@@ -37,8 +37,8 @@ class Screensaver(xbmcgui.WindowXMLDialog):
     def onInit(self):
         self.stop = False
         self._get_settings()
-        self.monitor = PlaylistMonitor(action=self.stop_playlist)
-        self.player = PlaylistPlayer()
+        self.monitor = xbmc.Monitor()
+        self.player = xbmc.Player()
         self.play_playlist()
 
     def _get_settings(self):
@@ -67,14 +67,12 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             xbmc.executebuiltin('Notification(%s, %s, %s, %s)' % (ADDON_NAME, ADDON_LANGUAGE(30003), 5000, ADDON_ICON))
             valid_playlist = False
         if valid_playlist:
+            # play windowed, skin xml has fullscreen videowindow control.
             self.player.play(queue, windowed=True)
             # save value of playlist repeat
             self.repeat = xbmc.getInfoLabel("Playlist.Repeat")
             # set playlist to repeat for infinite playback
             xbmc.executebuiltin("PlayerControl(RepeatAll)")
-            while not self.monitor.abortRequested() and not self.stop:
-                if self.monitor.waitForAbort(1):
-                    break
 
     def onAction(self, action):
         # catch all actions and stop the screensaver
@@ -85,21 +83,3 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             elif self.repeat == xbmc.getLocalizedString(591):
                 xbmc.executebuiltin("PlayerControl(RepeatOff)")
             self.stop_playlist()
-
-
-class PlaylistPlayer(xbmc.Player):
-    '''Implementation of xbmc.Player'''
-    def __init__(self, *args, **kwargs):
-        xbmc.log(msg='%s: Playback started' % (ADDON_NAME), level=xbmc.LOGDEBUG)
-        xbmc.Player.__init__(self)
-
-
-class PlaylistMonitor(xbmc.Monitor):
-    '''Implementation of xbmc.Monitor'''
-    def __init__(self, *args, **kwargs):
-        self.action = kwargs['action']
-
-    def onScreensaverDeactivated(self):
-        # As soon as a video is started onScreensaverDeactivated is announced
-        if not xbmc.Player().isPlayingVideo():
-            self.action()
