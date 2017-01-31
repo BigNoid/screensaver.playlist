@@ -37,7 +37,6 @@ class Screensaver(xbmcgui.WindowXMLDialog):
     def onInit(self):
         self.stop = False
         self._get_settings()
-        self.monitor = xbmc.Monitor()
         self.player = xbmc.Player()
         self.play_playlist()
 
