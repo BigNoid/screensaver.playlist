@@ -38,7 +38,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         self.stop = False
         self._get_settings()
         self.monitor = PlaylistMonitor(action=self.stop_playlist)
-        self.player = PlaylistPlayer(action=self.stop_playlist)
+        self.player = PlaylistPlayer()
         self.play_playlist()
 
     def _get_settings(self):
@@ -68,9 +68,23 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             valid_playlist = False
         if valid_playlist:
             self.player.play(queue, windowed=True)
+            # save value of playlist repeat
+            self.repeat = xbmc.getInfoLabel("Playlist.Repeat")
+            # set playlist to repeat for infinite playback
+            xbmc.executebuiltin("PlayerControl(RepeatAll)")
             while not self.monitor.abortRequested() and not self.stop:
                 if self.monitor.waitForAbort(1):
                     break
+
+    def onAction(self, action):
+        # catch all actions and stop the screensaver
+        if action.getId():
+            # restore value of playlist repeat
+            if self.repeat == xbmc.getLocalizedString(592):
+                xbmc.executebuiltin("PlayerControl(RepeatOne)")
+            elif self.repeat == xbmc.getLocalizedString(591):
+                xbmc.executebuiltin("PlayerControl(RepeatOff)")
+            self.stop_playlist()
 
 
 class PlaylistPlayer(xbmc.Player):
@@ -78,10 +92,6 @@ class PlaylistPlayer(xbmc.Player):
     def __init__(self, *args, **kwargs):
         xbmc.log(msg='%s: Playback started' % (ADDON_NAME), level=xbmc.LOGDEBUG)
         xbmc.Player.__init__(self)
-        self.action = kwargs['action']
-
-    def onPlayBackStopped(self):
-        self.action()
 
 
 class PlaylistMonitor(xbmc.Monitor):
@@ -90,5 +100,6 @@ class PlaylistMonitor(xbmc.Monitor):
         self.action = kwargs['action']
 
     def onScreensaverDeactivated(self):
+        # As soon as a video is started onScreensaverDeactivated is announced
         if not xbmc.Player().isPlayingVideo():
             self.action()
