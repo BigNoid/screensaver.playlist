@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-#     Copyright (C) 2016 Team-Kodi
+#     Copyright (C) 2017 BigNoid
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,58 +16,28 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
+import sys
 import xbmc
 import xbmcaddon
 
+
 ADDON = xbmcaddon.Addon()
+ADDONID = ADDON.getAddonInfo('id')
 ADDON_VERSION = ADDON.getAddonInfo('version')
+CWD = ADDON.getAddonInfo('path').decode("utf-8")
 ADDON_NAME = ADDON.getAddonInfo('name')
 ADDON_LANGUAGE = ADDON.getLocalizedString
 ADDON_ICON = ADDON.getAddonInfo('icon')
+ADDON_RESOURCE = xbmc.translatePath(os.path.join(CWD, 'resources', 'lib').encode("utf-8")).decode("utf-8")
 
 
-def log(txt):
-    message = '%s: %s' % (ADDON_NAME, txt.encode('ascii', 'ignore'))
-    xbmc.log(msg=message, level=xbmc.LOGDEBUG)
+sys.path.append(ADDON_RESOURCE)
 
-
-class Main:
-    def __init__(self):
-        self.playlistplayer = PlaylistPlayer()
-        self.screensaver()
-
-    def screensaver(self):
-        playlist = ADDON.getSetting("playlist")
-        random = ADDON.getSetting("random")
-        if playlist.endswith('.m3u'):
-            queue = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-            queue.load(playlist)
-            if random:
-                queue.shuffle()
-            xbmc.Player().play(queue)
-            while xbmc.getCondVisibility("Player.HasMedia"):
-                xbmc.sleep(1000)
-        elif playlist.endswith('.xsp'):
-            xbmc.Player().play(playlist)
-            while xbmc.getCondVisibility("Player.HasMedia"):
-                xbmc.sleep(1000)
-        else:
-            xbmc.executebuiltin('Notification(%s, %s, %d, %s)' % (ADDON_NAME, ADDON_LANGUAGE(30003), 5000, ADDON_ICON))
-
-
-class PlaylistPlayer(xbmc.Player):
-    def __init__(self):
-        xbmc.log(msg='Playlist Screensaver started', level=xbmc.LOGDEBUG)
-
-    def onPlaybackEnded(self):
-        self.screensaver()
-
-    def onPlayBackStopped(self):
-        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-        playlist.clear()
-        xbmc.log(msg='Playlist Screensaver stopped', level=xbmc.LOGDEBUG)
-
-
-log('script version %s started' % ADDON_VERSION)
-Main()
-log('script version %s stopped' % ADDON_VERSION)
+xbmc.log(msg='%s version %s started' % (ADDON_NAME, ADDON_VERSION), level=xbmc.LOGDEBUG)
+if (__name__ == "__main__"):
+    import gui
+    screensaver_gui = gui.Screensaver('screensaver-playlist.xml', CWD, 'default')
+    screensaver_gui.doModal()
+    del screensaver_gui
+xbmc.log(msg='%s version %s stopped' % (ADDON_NAME, ADDON_VERSION), level=xbmc.LOGDEBUG)

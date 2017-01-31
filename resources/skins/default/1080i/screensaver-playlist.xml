@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="videowindow">
+			<width>100%</width>
+			<height>100%</height>
+			<visible>true</visible>
+		</control>
+	</controls>
+</window>
