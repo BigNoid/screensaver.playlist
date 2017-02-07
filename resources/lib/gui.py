@@ -35,7 +35,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         pass
 
     def onInit(self):
-        self.stop = False
+        self.repeat = xbmc.getLocalizedString(591)
         self._get_settings()
         self.player = xbmc.Player()
         self.play_playlist()
@@ -45,7 +45,6 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         self.random = ADDON.getSetting("random")
 
     def stop_playlist(self):
-        self.stop = True
         self.player.stop()
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.clear()
@@ -69,7 +68,9 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             # play windowed, skin xml has fullscreen videowindow control.
             self.player.play(queue, windowed=True)
             # save value of playlist repeat
-            self.repeat = xbmc.getInfoLabel("Playlist.Repeat")
+            self.repeat = xbmc.getInfoLabel("Playlist.Repeat(video)")
+            # sleep for 1 sec to allow infolabel to save before setting to repeat all
+            xbmc.sleep(1000)
             # set playlist to repeat for infinite playback
             xbmc.executebuiltin("PlayerControl(RepeatAll)")
 
