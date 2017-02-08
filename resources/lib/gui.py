@@ -35,24 +35,16 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         pass
 
     def onInit(self):
-        self._get_vars()
+        self.repeat = xbmc.getLocalizedString(591)
         self._get_settings()
         self.player = xbmc.Player()
         self.play_playlist()
-
-    def _get_vars(self):
-        self.stop = False
-        # save value of playlist repeat
-        self.repeat = xbmc.getInfoLabel("Playlist.Repeat(video)")
-        # init monitor
-        self.monitor = PlaylistMonitor(action=self.stop_playlist)
 
     def _get_settings(self):
         self.playlist_path = ADDON.getSetting("playlist")
         self.random = ADDON.getSetting("random")
 
     def stop_playlist(self):
-        self.stop = True
         self.player.stop()
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.clear()
@@ -76,14 +68,12 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         if valid_playlist:
             # Play fullscreen (windowed seems buggy; random freezes).
             self.player.play(queue)
+            # save value of playlist repeat
+            self.repeat = xbmc.getInfoLabel("Playlist.Repeat(video)")
             # sleep for 1 sec to allow infolabel to save before setting to repeat all
             xbmc.sleep(1000)
             # set playlist to repeat for infinite playback
             xbmc.executebuiltin("PlayerControl(RepeatAll)")
-        while not self.monitor.abortRequested() and not self.stop:
-            if self.monitor.waitForAbort(10):
-                # Abort was requested while waiting. We should exit
-                break
 
     def onAction(self, action):
         # catch all actions and stop the screensaver
@@ -95,11 +85,3 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                 xbmc.executebuiltin("PlayerControl(RepeatOff)")
             self.stop_playlist()
         pass
-
-
-class PlaylistMonitor(xbmc.Monitor):
-    def __init__(self, *args, **kwargs):
-        self.action = kwargs['action']
-
-    def onScreensaverDeactivated(self):
-        self.action()
