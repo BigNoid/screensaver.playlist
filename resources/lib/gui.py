@@ -50,6 +50,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         playlist.clear()
         self.close()
         xbmc.log(msg='%s: Playback stopped' % (ADDON_NAME), level=xbmc.LOGDEBUG)
+        pass
 
     def play_playlist(self):
         if self.playlist_path.endswith('.m3u'):
@@ -65,8 +66,8 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             xbmc.executebuiltin('Notification(%s, %s, %s, %s)' % (ADDON_NAME, ADDON_LANGUAGE(30003), 5000, ADDON_ICON))
             valid_playlist = False
         if valid_playlist:
-            # play windowed, skin xml has fullscreen videowindow control.
-            self.player.play(queue, windowed=True)
+            # Play fullscreen (windowed seems buggy; random freezes).
+            self.player.play(queue)
             # save value of playlist repeat
             self.repeat = xbmc.getInfoLabel("Playlist.Repeat(video)")
             # sleep for 1 sec to allow infolabel to save before setting to repeat all
@@ -83,3 +84,4 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             elif self.repeat == xbmc.getLocalizedString(591):
                 xbmc.executebuiltin("PlayerControl(RepeatOff)")
             self.stop_playlist()
+        pass
